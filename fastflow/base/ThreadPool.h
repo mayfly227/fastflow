@@ -9,14 +9,14 @@
  * */
 #include "fastflow/base/noncopyable.h"
 
+#include <atomic>
 #include <condition_variable>
+#include <functional>
 #include <memory>
 #include <mutex>
 #include <queue>
 #include <thread>
 #include <vector>
-#include <functional>
-#include <atomic>
 
 namespace FastFlow {
     class ThreadPool : noncopyable {
@@ -36,7 +36,7 @@ namespace FastFlow {
         void run(Task task);
 
         // 停止所有任务
-        void stop();
+        void stop(bool wait_all_task_complete);
 
         const std::string &getPoolName() const;
 
@@ -62,7 +62,6 @@ namespace FastFlow {
         std::vector<std::unique_ptr<std::thread>> threads_;
     public:
         static std::atomic<int> count;
-
 
     };
 
