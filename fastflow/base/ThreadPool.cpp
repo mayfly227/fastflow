@@ -22,16 +22,16 @@ void FastFlow::ThreadPool::start(int numThreads) {
     }
 }
 
-void FastFlow::ThreadPool::run(FastFlow::ThreadPool::Task task) {
+void FastFlow::ThreadPool::run(const FastFlow::ThreadPool::Task &task) {
     if (threads_.empty()) {
         task();
     } else {
         std::unique_lock<std::mutex> uniqueLock(mutex_);
-        count++;
         if (!isRunning_) {
             return;
         }
         tasks.emplace(task);
+        count++;
         // 唤醒某个线程
         notEmpty_.notify_one();
     }

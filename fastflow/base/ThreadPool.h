@@ -33,7 +33,7 @@ namespace FastFlow {
         void start(int numThreads);
 
         // 运行任务(实际是唤醒某个线程)
-        void run(Task task);
+        void run(const Task &task);
 
         // 停止所有任务
         void stop(bool wait_all_task_complete);
