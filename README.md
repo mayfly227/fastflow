@@ -1,3 +1,3 @@
 ```
-FastFlow is a multithreaded C++ network library Modified from MuDuo.
+fastflow is a multithreaded C++ network library Modified from MuDuo.
 ```

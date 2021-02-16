@@ -18,12 +18,12 @@
 #include <thread>
 #include <vector>
 
-namespace FastFlow {
-    class ThreadPool : noncopyable {
+namespace fastflow {
+    class threadpool : noncopyable {
     public:
-        explicit ThreadPool(std::string name = "ThreadPool");
+        explicit threadpool(std::string name = "threadpool");
 
-        ~ThreadPool();
+        ~threadpool();
 
     public:
         // 任务回调

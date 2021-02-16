@@ -3,16 +3,16 @@
 //
 
 #include <iostream>
-#include "ThreadPool.h"
+#include "threadpool.h"
 
 
-FastFlow::ThreadPool::ThreadPool(std::string name)
+fastflow::threadpool::threadpool(std::string name)
         : mutex_(),
           poolName_(std::move(name)),
           isRunning_(false) {
 }
 
-void FastFlow::ThreadPool::start(int numThreads) {
+void fastflow::threadpool::start(int numThreads) {
     isRunning_ = true;
     threads_.reserve(numThreads);
     for (int i = 0; i < numThreads; ++i) {
@@ -22,7 +22,7 @@ void FastFlow::ThreadPool::start(int numThreads) {
     }
 }
 
-void FastFlow::ThreadPool::run(const FastFlow::ThreadPool::Task &task) {
+void fastflow::threadpool::run(const fastflow::threadpool::Task &task) {
     if (threads_.empty()) {
         task();
     } else {
@@ -37,7 +37,7 @@ void FastFlow::ThreadPool::run(const FastFlow::ThreadPool::Task &task) {
     }
 }
 
-void FastFlow::ThreadPool::stop(bool wait_all_task_complete) {
+void fastflow::threadpool::stop(bool wait_all_task_complete) {
     if (wait_all_task_complete) {
         {
             std::unique_lock<std::mutex> uniqueLock(mutex_);
@@ -65,7 +65,7 @@ void FastFlow::ThreadPool::stop(bool wait_all_task_complete) {
     }
 }
 
-void FastFlow::ThreadPool::runInThread() {
+void fastflow::threadpool::runInThread() {
     while (isRunning_ == true) {
         // 如果任务列表没有任务，那么就会阻塞在这里
         Task task{take()};
@@ -80,7 +80,7 @@ void FastFlow::ThreadPool::runInThread() {
     }
 }
 
-FastFlow::ThreadPool::Task FastFlow::ThreadPool::take() {
+fastflow::threadpool::Task fastflow::threadpool::take() {
     std::unique_lock<std::mutex> uniqueLock(mutex_);
     // 如果队列为空才等待
     while (tasks.empty() && isRunning_) {
@@ -95,18 +95,18 @@ FastFlow::ThreadPool::Task FastFlow::ThreadPool::take() {
     return task;
 }
 
-FastFlow::ThreadPool::~ThreadPool() {
+fastflow::threadpool::~threadpool() {
     if (isRunning_) {
         stop(false);
     }
-    printf("ThreadPool is stop,remain task count == [%d]\n", (int) FastFlow::ThreadPool::count);
+    printf("threadpool is stop,remain task count == [%d]\n", (int) fastflow::threadpool::count);
 }
 
-const std::string &FastFlow::ThreadPool::getPoolName() const {
+const std::string &fastflow::threadpool::getPoolName() const {
     return poolName_;
 };
 
-std::atomic<int> FastFlow::ThreadPool::count = 0;
+std::atomic<int> fastflow::threadpool::count = 0;
 
 
 
