@@ -8,7 +8,7 @@
 #include <mutex>
 #include <condition_variable>
 
-namespace FastFlow {
+namespace fastflow {
     class latch {
     private:
         unsigned int count_;

@@ -13,9 +13,9 @@
 #include <deque>
 
 //blocking queue实现
-namespace FastFlow {
+namespace fastflow {
     template<typename T>
-    class blockingqueue : FastFlow::noncopyable {
+    class blockingqueue : fastflow::noncopyable {
     public:
         blockingqueue()
                 : mutex_(),

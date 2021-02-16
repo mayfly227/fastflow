@@ -5,7 +5,7 @@
 #ifndef FASTFLOW_NONCOPYABLE_H
 #define FASTFLOW_NONCOPYABLE_H
 
-namespace FastFlow {
+namespace fastflow {
     class noncopyable {
     public:
         noncopyable(const noncopyable &) = delete;
