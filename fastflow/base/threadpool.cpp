@@ -2,6 +2,7 @@
 // Created by itsuy on 2021/2/8.
 //
 
+#include <exception>
 #include <iostream>
 #include "threadpool.h"
 
@@ -31,7 +32,7 @@ void fastflow::threadpool::run(const fastflow::threadpool::Task &task) {
             return;
         }
         tasks.emplace(task);
-        count++;
+        task_count++;
         // 唤醒某个线程
         notEmpty_.notify_one();
     }
@@ -44,8 +45,8 @@ void fastflow::threadpool::stop(bool wait_all_task_complete) {
             // 标志位为false,runInThread会跳出while，线程结束
             //如果不唤醒所有的线程,那么子线程就会卡在wait
             notEmpty_.notify_all();
-            while (count > 0) {
-                shutDown.wait(uniqueLock);
+            while (task_count > 0) {
+                shutdown.wait(uniqueLock);
                 isRunning_ = false;
                 notEmpty_.notify_all();
             }
@@ -66,18 +67,27 @@ void fastflow::threadpool::stop(bool wait_all_task_complete) {
 }
 
 void fastflow::threadpool::runInThread() {
-    while (isRunning_ == true) {
-        // 如果任务列表没有任务，那么就会阻塞在这里
-        Task task{take()};
-        if (task) {
-            task();
-            count--;
-            if (count == 0) {
-                shutDown.notify_all();
+    try {
+        while (isRunning_) {
+            // 如果任务列表没有任务，那么就会阻塞在这里
+            Task task{take()};
+            if (task) {
+                task();
+                task_count--;
+                if (task_count == 0) {
+                    shutdown.notify_all();
+                }
+            } else {
             }
-        } else {
         }
+    } catch (const std::exception &ex) {
+        std::cerr << "exception caught in ThreadPool" << std::endl;
+        std::cerr << "reason :" << ex.what() << std::endl;
+    } catch (...) {
+        std::cerr << "unknown exception caught in ThreadPool" << std::endl;
+        throw;
     }
+
 }
 
 fastflow::threadpool::Task fastflow::threadpool::take() {
@@ -99,14 +109,14 @@ fastflow::threadpool::~threadpool() {
     if (isRunning_) {
         stop(false);
     }
-    printf("threadpool is stop,remain task count == [%d]\n", (int) fastflow::threadpool::count);
+    printf("threadpool is stop,remain task task_count == [%d]\n", (int) fastflow::threadpool::task_count);
 }
 
 const std::string &fastflow::threadpool::getPoolName() const {
     return poolName_;
 };
 
-std::atomic<int> fastflow::threadpool::count = 0;
+std::atomic<int> fastflow::threadpool::task_count = 0;
 
 
 

@@ -53,7 +53,7 @@ namespace fastflow {
         mutable std::mutex mutex_;
         // 队列是否为空条件变量
         std::condition_variable notEmpty_;
-        std::condition_variable shutDown;
+        std::condition_variable shutdown;
         std::string poolName_;
 
         // 任务列表
@@ -61,7 +61,7 @@ namespace fastflow {
         //线程列表
         std::vector<std::unique_ptr<std::thread>> threads_;
     public:
-        static std::atomic<int> count;
+        static std::atomic<int> task_count;
 
     };
 
