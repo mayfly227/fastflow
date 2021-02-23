@@ -4,10 +4,24 @@ project(FastFlow_Base)
 set(CMAKE_CXX_STANDARD 17)
 
 set(base_src
-        ThreadPool.cpp
-        )
+        threadpool.cpp threadpool.h
+        latch.cpp latch.h
+        copyable.h
+        noncopyable.h
+        blockingqueue.hpp
+        logging.cpp logging.h
+        timestamp.cpp timestamp.h)
 
-add_library(fastflow_base ${base_src})
-target_link_libraries(fastflow_base pthread)
+IF (WIN32)
+    MESSAGE(STATUS "Build with windows")
+    add_library(fastflow_base ${base_src})
+ELSEIF (APPLE)
+    MESSAGE(STATUS "Build with Apple systems.")
+ELSEIF (UNIX)
+    MESSAGE(STATUS "Build with UNIX-like OS's.")
+    add_library(fastflow_base ${base_src})
+    target_link_libraries(fastflow_base pthread)
+ENDIF ()
+
 
 install(TARGETS fastflow_base DESTINATION lib)
