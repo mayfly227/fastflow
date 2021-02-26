@@ -11,7 +11,7 @@ set(base_src
         blockingqueue.hpp
         logging.cpp logging.h
         timestamp.cpp timestamp.h
-        syscall.h syscall.cpp)
+        )
 
 IF (WIN32)
     MESSAGE(STATUS "Build with windows")

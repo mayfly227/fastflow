@@ -1,43 +1,46 @@
-//
-// Created by itsuy on 2021/2/17.
-//
+// copied from muduo/net/tests/TimerQueue_unittest.cc
 
-//#include "fastflow/net/channel.h"
 #include "fastflow/net/eventloop.h"
-
+#include "fastflow/base/timestamp.h"
+#include "fastflow/base/logging.h"
 
 #include <thread>
-#include <iostream>
+#include <functional>
 
-#ifdef WIN32
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-#elif __linux__
-
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <sys/timerfd.h>
-#include "unistd.h"
-
-#endif
+#include <stdio.h>
+#include <unistd.h>
 
 using namespace std;
-
+using namespace fastflow;
+int cnt = 0;
 event_loop *g_loop;
 
-void run1(int delay) {
-    printf("run delay [%d]\n", delay);
+void printTid() {
+    printf("pid = %d, tid = %ld\n", getpid(), this_thread::get_id());
+    printf("now %s\n", timestamp::get_now_fmt_string().c_str());
+}
+
+void print(const char *msg) {
+    printf("%s %s\n", timestamp::get_now_fmt_string().c_str(), msg);
+    if (++cnt == 20) {
+        g_loop->quit();
+    }
 }
 
 int main() {
+    printTid();
+    logging::set_level(logging::level_enum::error);
     event_loop loop;
-    loop.call_later(5, [] { run1(5); });
-    this_thread::sleep_for(10s);
-    loop.call_later(3, [] { run1(3); });
-    loop.call_later(8, [] { run1(8); });
-    loop.call_later(12, [] { run1(12); });
+    g_loop = &loop;
+    print("main");
+    loop.call_later(1, [] { return print("once1\n"); });
+//    loop.call_later(1.5, [] { return print("once1.5\n"); });
+//    loop.call_later(2.5, [] { return print("once2.5\n"); });
+//    loop.call_later(3.5, [] { return print("once3.5\n"); });
+//    loop.call_every(2, [] { return print("every2\n"); });
+    loop.call_every(3, [] { return print("every3\n"); });
 
-    loop.call_every(3, [] { printf("every\n"); });
     loop.loop();
+    print("main loop exits");
+    sleep(1);
 }
