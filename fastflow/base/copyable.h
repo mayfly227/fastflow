@@ -2,8 +2,8 @@
 // Created by Li on 2021/2/8.
 //
 
-#ifndef FASTFLOW_NONCOPYABLE_H
-#define FASTFLOW_NONCOPYABLE_H
+#ifndef FASTFLOW_COPYABLE_H
+#define FASTFLOW_COPYABLE_H
 
 namespace fastflow {
     class copyable {
@@ -14,4 +14,4 @@ namespace fastflow {
     };
 
 }
-#endif //FASTFLOW_NONCOPYABLE_H
+#endif //FASTFLOW_COPYABLE_H
