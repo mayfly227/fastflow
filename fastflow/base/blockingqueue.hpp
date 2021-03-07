@@ -10,7 +10,6 @@
 #include <condition_variable>
 #include <mutex>
 #include <queue>
-#include <deque>
 
 //blocking queue实现
 namespace fastflow {

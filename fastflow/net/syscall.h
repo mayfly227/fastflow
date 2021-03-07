@@ -72,11 +72,6 @@ public:
 #ifdef WIN32
 
 wakeup_fd_pipe create_eventfd();
-//{
-//    auto[read, write] = ::eventfd(0, 0);
-//    wakeup_fd_pipe t{read, write};
-//    return t;
-//};
 
 #elif __linux__
 
